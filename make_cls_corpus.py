@@ -35,7 +35,7 @@ def batch(args) -> dict:
     for item in patents:
         patent = patent_all.find_one({'number': item}, projection=['brf_sum_text', 'title', 'abstract', 'claim', 'ipcr'])
         text = gen_text(patent)
-        result[item] = '%s\t%s\n' % (text[:500], '   '.join(['__label__' + x for x in patent['ipcr']]))
+        result[item] = '%s\t%s\n' % (' '.join(text[:500]), '   '.join(['__label__' + x for x in patent['ipcr']]))
     print(datetime.now(), 'End', now)
     return result
 
@@ -46,8 +46,8 @@ def make_cls_corpus(filename:str, test:str) -> None:
     total = len(corpus)
     print('total:', total)
     patents = []
-    for x in range(int(total / 1000) + 1):
-        patents.append((x, corpus[x*1000:(x+1)*1000]))
+    for x in range(int(total / 10000) + 1):
+        patents.append((x, corpus[x*10000:(x+1)*10000]))
     with Pool() as p:
         for item in p.map(batch, patents):
             patent_text.update(item)
@@ -55,7 +55,7 @@ def make_cls_corpus(filename:str, test:str) -> None:
     with open(test) as fin:
         fin.readline()
         for line in fin:
-            line = line.strip()[0]
+            line = line.split()[0]
             test_list.add(line)
     with open('train_cls_id.txt', 'w', encoding='utf-8') as train_id:
         with open('train_cls.txt', 'w', encoding='utf-8') as train:

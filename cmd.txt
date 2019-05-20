@@ -1,0 +1,29 @@
+nohup ./starspace train \
+  -trainFile uspto/train_cls.txt \
+  -model uspto/model_50_cos \
+  -initRandSd 0.01 \
+  -adagrad false \
+  -ngrams 3 \
+  -lr 0.01 \
+  -epoch 50 \
+  -thread 32 \
+  -dim 50 \
+  -negSearchLimit 5 \
+  -trainMode 0 \
+  -label "__label__" \
+  -similarity "cosine" \
+  -verbose true > uspto/model_50_cos.log 2>&1 &
+ 
+
+./starspace test \
+  -model uspto/model_10_cos \
+  -testFile uspto/test_cls.txt \
+  -thread 32 \
+  -verbose true
+
+10_cos_10
+Predictions use 3651 known labels.
+Evaluation Metrics :
+hit@1: 0.124323 hit@10: 0.455817 hit@20: 0.578647 hit@50: 0.72248 mean ranks : 104.021 Total examples : 112554
+
+50_cos_50_3_5
